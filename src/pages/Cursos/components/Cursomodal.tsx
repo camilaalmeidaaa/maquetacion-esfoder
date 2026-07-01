@@ -1,17 +1,18 @@
-import {
-useState
-} from "react";
-
+import { useState } from "react";
 
 import {
-Check
+  Check,
+  X,
+  ChevronRight,
+  ChevronLeft
 } from "lucide-react";
 
 
 import {
-seedNiveles,
-seedTematicas,
-seedLogros
+  seedNiveles,
+  seedTematicas,
+  seedLogros,
+  seedInstructores
 
 } from "../../../services/seedData";
 
@@ -20,17 +21,21 @@ seedLogros
 
 export default function CursoModal({
 
-cerrar,
-guardar,
-cursos,
-cursoEditar,
-lineaId
+  cerrar,
+  guardar,
+  cursos,
+  cursoEditar,
+  lineaId
 
 }:any){
 
 
 
-// niveles ya usados
+const [step,setStep]=useState(1);
+
+
+
+// niveles usados
 
 const nivelesUsados =
 cursos.map(
@@ -47,6 +52,7 @@ seedNiveles.filter(
 !nivelesUsados.includes(n.id)
 
 ||
+
 n.id===cursoEditar?.nivelId
 
 );
@@ -75,6 +81,8 @@ tematicas:[],
 
 logros:[],
 
+instructores:[],
+
 estado:"Activo"
 
 }
@@ -85,11 +93,12 @@ estado:"Activo"
 
 
 
+
 function seleccionarTematica(item:any){
 
 
 const existe =
-data.tematicas.find(
+data.tematicas.some(
 (t:any)=>t.id===item.id
 );
 
@@ -98,7 +107,6 @@ data.tematicas.find(
 setData({
 
 ...data,
-
 
 tematicas:
 
@@ -117,12 +125,9 @@ data.tematicas.filter(
 item
 ]
 
-
-})
-
+});
 
 }
-
 
 
 
@@ -131,7 +136,7 @@ function seleccionarLogro(item:any){
 
 
 const existe =
-data.logros.find(
+data.logros.some(
 (l:any)=>l.id===item.id
 );
 
@@ -140,7 +145,6 @@ data.logros.find(
 setData({
 
 ...data,
-
 
 logros:
 
@@ -159,9 +163,45 @@ data.logros.filter(
 item
 ]
 
+});
 
-})
+}
 
+
+
+
+function seleccionarInstructor(item:any){
+
+
+const existe =
+data.instructores.some(
+(i:any)=>i.id===item.id
+);
+
+
+
+setData({
+
+...data,
+
+instructores:
+
+existe
+
+?
+
+data.instructores.filter(
+(i:any)=>i.id!==item.id
+)
+
+:
+
+[
+...data.instructores,
+item
+]
+
+});
 
 }
 
@@ -169,8 +209,8 @@ item
 
 
 
-
 return (
+
 
 <div className="
 fixed
@@ -185,12 +225,38 @@ z-50
 
 <div className="
 bg-white
-w-[500px]
+w-[520px]
 max-h-[90vh]
-overflow-y-auto
 rounded-3xl
 p-8
+relative
+overflow-hidden
 ">
+
+
+
+
+
+<button
+
+onClick={cerrar}
+
+className="
+absolute
+right-5
+top-5
+text-gray-400
+hover:text-gray-700
+"
+
+>
+
+<X size={22}/>
+
+</button>
+
+
+
 
 
 <h2 className="
@@ -199,14 +265,21 @@ font-bold
 text-gray-800
 ">
 
+
 {
+
 cursoEditar
+
 ?
+
 "Editar curso"
+
 :
+
 "Nuevo curso"
 
 }
+
 
 </h2>
 
@@ -215,14 +288,89 @@ cursoEditar
 
 
 
-{/* NOMBRE */}
 
-<label className="
-text-sm
-font-medium
-block
-mt-6
+<div className="
+flex
+justify-center
+gap-3
+mt-5
 ">
+
+
+{
+
+[1,2,3].map((item)=>(
+
+
+<div
+
+key={item}
+
+className={`
+
+w-3
+h-3
+rounded-full
+
+
+${step===item
+
+?
+
+"bg-lime-500"
+
+:
+
+"bg-gray-300"
+
+}
+
+`}
+
+
+/>
+
+
+))
+
+}
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<div className="
+mt-6
+max-h-[55vh]
+overflow-y-auto
+pr-2
+">
+
+
+
+
+
+
+
+{/* STEP 1 */}
+
+{
+
+step===1 &&
+
+
+<div>
+
+
+<label className="text-sm font-medium">
 
 Nombre del curso
 
@@ -231,7 +379,6 @@ Nombre del curso
 
 <input
 
-
 className="
 w-full
 border
@@ -239,7 +386,6 @@ rounded-xl
 p-3
 mt-2
 "
-
 
 value={data.nombre}
 
@@ -263,23 +409,16 @@ nombre:e.target.value
 
 
 
-
-
-
-{/* NIVEL */}
-
-
 <label className="
-text-sm
-font-medium
 block
 mt-5
+text-sm
+font-medium
 ">
 
 Nivel
 
 </label>
-
 
 
 <select
@@ -312,7 +451,7 @@ nivelId:Number(e.target.value)
 >
 
 
-<option>
+<option value="">
 
 Seleccione nivel
 
@@ -321,6 +460,7 @@ Seleccione nivel
 
 
 {
+
 nivelesDisponibles.map((n:any)=>(
 
 
@@ -332,14 +472,13 @@ value={n.id}
 
 >
 
-
 {n.nombre}
-
 
 </option>
 
 
 ))
+
 
 }
 
@@ -350,20 +489,14 @@ value={n.id}
 
 
 
-
-
-
-{/* ORDEN */}
-
-
 <label className="
-text-sm
-font-medium
 block
 mt-5
+text-sm
+font-medium
 ">
 
-Orden dentro de la ruta
+Orden
 
 </label>
 
@@ -394,7 +527,6 @@ orden:Number(e.target.value)
 
 })
 
-
 }
 
 
@@ -404,35 +536,101 @@ orden:Number(e.target.value)
 
 
 
-<p className="
-text-xs
-text-gray-400
-mt-1
+
+
+<div className="
+flex
+justify-between
+items-center
+mt-6
 ">
 
-Ejemplo: Nivel 1 → orden 1,
-Nivel 2 → orden 2
 
-</p>
+<span>
 
+Estado
 
-
-
+</span>
 
 
 
+<select
 
-{/* TEMATICAS */}
+className="
+border
+rounded-xl
+p-2
+"
 
 
-<h3 className="
-font-semibold
-mt-7
-">
+value={data.estado}
+
+
+onChange={e=>
+
+setData({
+
+...data,
+
+estado:e.target.value
+
+})
+
+}
+
+
+>
+
+<option>
+
+Activo
+
+</option>
+
+
+<option>
+
+Inactivo
+
+</option>
+
+
+</select>
+
+
+</div>
+
+
+</div>
+
+
+}
+
+
+
+
+
+
+
+
+
+{/* STEP 2 */}
+
+{
+
+step===2 &&
+
+
+<div>
+
+
+
+<h3 className="font-semibold">
 
 Temáticas
 
 </h3>
+
 
 
 
@@ -451,7 +649,6 @@ seedTematicas.map((t:any)=>(
 
 <button
 
-
 key={t.id}
 
 
@@ -460,18 +657,15 @@ onClick={()=>seleccionarTematica(t)}
 
 className={`
 
-text-left
 p-3
 rounded-xl
 border
-text-sm
+text-left
 
 
 ${
-
 data.tematicas.some(
 (x:any)=>x.id===t.id
-
 )
 
 ?
@@ -484,7 +678,6 @@ data.tematicas.some(
 
 }
 
-
 `}
 
 
@@ -495,14 +688,13 @@ data.tematicas.some(
 
 data.tematicas.some(
 (x:any)=>x.id===t.id
-
 )
 
 &&
 
 <Check
 size={14}
-className="inline mr-1"
+className="inline mr-2"
 />
 
 }
@@ -511,9 +703,7 @@ className="inline mr-1"
 {t.nombre}
 
 
-
 </button>
-
 
 
 ))
@@ -530,20 +720,11 @@ className="inline mr-1"
 
 
 
-
-{/* LOGROS */}
-
-
-
-<h3 className="
-font-semibold
-mt-7
-">
+<h3 className="font-semibold mt-6">
 
 Logros
 
 </h3>
-
 
 
 
@@ -555,12 +736,10 @@ mt-3
 
 {
 
-
 seedLogros.map((l:any)=>(
 
 
 <button
-
 
 key={l.id}
 
@@ -571,18 +750,15 @@ onClick={()=>seleccionarLogro(l)}
 className={`
 
 w-full
-text-left
 p-3
 rounded-xl
 border
-text-sm
+text-left
 
 
 ${
-
 data.logros.some(
 (x:any)=>x.id===l.id
-
 )
 
 ?
@@ -605,7 +781,6 @@ data.logros.some(
 
 data.logros.some(
 (x:any)=>x.id===l.id
-
 )
 
 &&
@@ -621,7 +796,6 @@ className="inline mr-2"
 🎯 {l.nombre}
 
 
-
 </button>
 
 
@@ -631,73 +805,150 @@ className="inline mr-2"
 }
 
 
-
 </div>
 
 
 
 
+</div>
+
+
+}
 
 
 
 
-{/* ESTADO */}
+
+
+
+
+
+{/* STEP 3 */}
+
+{
+
+step===3 &&
+
+
+<div>
+
+
+<h3 className="font-semibold">
+
+Asignar instructores
+
+</h3>
+
 
 
 
 <div className="
-mt-6
-flex
-justify-between
-items-center
+space-y-3
+mt-4
 ">
 
 
-<span>
-Estado
-</span>
+{
+
+seedInstructores.map((i:any)=>(
 
 
-<select
+<button
 
-className="
-border
+
+key={i.id}
+
+
+onClick={()=>seleccionarInstructor(i)}
+
+
+
+className={`
+
+w-full
+p-3
 rounded-xl
-p-2
-"
-
-value={data.estado}
+border
+text-left
 
 
-onChange={e=>
+${
+data.instructores.some(
+(x:any)=>x.id===i.id
+)
 
-setData({
+?
 
-...data,
+"bg-lime-100 border-lime-400"
 
-estado:e.target.value
+:
 
-})
+"bg-gray-50"
 
 }
+
+
+`}
 
 
 >
 
 
-<option>
-Activo
-</option>
+{
 
-<option>
-Inactivo
-</option>
+data.instructores.some(
+(x:any)=>x.id===i.id
+)
+
+&&
+
+<Check
+size={14}
+className="inline mr-2"
+/>
+
+}
 
 
-</select>
+<p className="font-medium">
+
+{i.nombre}
+
+</p>
+
+
+<span className="
+text-xs
+text-gray-500
+">
+
+{i.perfil}
+
+</span>
+
+
+</button>
+
+
+
+))
+
+
+}
 
 
 </div>
+
+
+</div>
+
+
+}
+
+
+
+</div>
+
 
 
 
@@ -713,9 +964,17 @@ mt-8
 ">
 
 
+
+
+
+{
+
+step>1 &&
+
+
 <button
 
-onClick={cerrar}
+onClick={()=>setStep(step-1)}
 
 className="
 flex-1
@@ -726,18 +985,29 @@ rounded-xl
 
 >
 
-Cancelar
+
+<ChevronLeft size={18} className="inline"/>
+
+Atrás
+
 
 </button>
 
 
+}
+
+
+
+
+
+{
+
+step<3 &&
 
 
 <button
 
-
-onClick={()=>guardar(data)}
-
+onClick={()=>setStep(step+1)}
 
 className="
 flex-1
@@ -747,16 +1017,56 @@ py-3
 rounded-xl
 "
 
-
 >
 
-Guardar curso
+
+Siguiente
+
+
+<ChevronRight size={18} className="inline"/>
+
 
 </button>
 
 
-</div>
+}
 
+
+
+
+
+
+{
+
+step===3 &&
+
+
+<button
+
+onClick={()=>guardar(data)}
+
+className="
+flex-1
+bg-lime-500
+text-white
+py-3
+rounded-xl
+"
+
+>
+
+
+Guardar curso
+
+
+</button>
+
+
+}
+
+
+
+</div>
 
 
 

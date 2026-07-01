@@ -258,3 +258,69 @@ estado:"Activo"
 }
 
 ];
+
+
+
+export const seedInstructores = [
+
+{
+  id:1,
+  nombre:"Carlos Andrés López",
+  perfil:"Monitor"
+},
+
+{
+  id:2,
+  nombre:"Laura Martínez",
+  perfil:"Instructor"
+},
+
+{
+  id:3,
+  nombre:"Juan Sebastián Gómez",
+  perfil:"Contratista 1"
+},
+
+{
+  id:4,
+  nombre:"Mariana Rodríguez",
+  perfil:"Contratista 2"
+},
+
+{
+  id:5,
+  nombre:"Daniel Torres",
+  perfil:"Instructor"
+},
+
+{
+  id:6,
+  nombre:"Sofía Ramírez",
+  perfil:"Monitor"
+},
+
+{
+  id:7,
+  nombre:"Andrés Felipe Castro",
+  perfil:"Contratista 1"
+},
+
+{
+  id:8,
+  nombre:"Valentina Muñoz",
+  perfil:"Contratista 2"
+},
+
+{
+  id:9,
+  nombre:"Miguel Ángel Pérez",
+  perfil:"Instructor"
+},
+
+{
+  id:10,
+  nombre:"Camila Fernández",
+  perfil:"Monitor"
+}
+
+];

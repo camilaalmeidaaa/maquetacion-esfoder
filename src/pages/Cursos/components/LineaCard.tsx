@@ -7,7 +7,8 @@ import {
 Plus,
 Dumbbell,
 Layers,
-MapPin
+MapPin,
+Sparkles
 } from "lucide-react";
 
 
@@ -24,14 +25,19 @@ seedCursos
 
 
 export default function LineaCard({
+
 linea
+
 }:any){
+
 
 
 const [cursos,setCursos]=useState(
 
 seedCursos.filter(
+
 (c:any)=>c.lineaId===linea.id
+
 )
 
 );
@@ -48,14 +54,11 @@ const [cursoEditar,setCursoEditar]=useState<any>(null);
 
 
 
-
 function abrirCrear(){
-
 
 setCursoEditar(null);
 
 setModal(true);
-
 
 }
 
@@ -65,11 +68,9 @@ setModal(true);
 
 function abrirEditar(curso:any){
 
-
 setCursoEditar(curso);
 
 setModal(true);
-
 
 }
 
@@ -77,8 +78,8 @@ setModal(true);
 
 
 
-function guardarCurso(curso:any){
 
+function guardarCurso(curso:any){
 
 
 if(cursoEditar){
@@ -101,7 +102,6 @@ c
 )
 
 )
-
 
 
 }
@@ -141,22 +141,28 @@ setCursoEditar(null);
 
 
 
+
 return (
+
 
 
 <div className="
 bg-white
-rounded-3xl
+rounded-[32px]
 border
+border-gray-100
 shadow-sm
-p-8
+hover:shadow-md
+transition
+p-7
 ">
 
 
 
 
 
-{/* HEADER LINEA */}
+
+{/* HEADER */}
 
 
 
@@ -164,15 +170,58 @@ p-8
 flex
 justify-between
 items-start
+gap-4
 ">
+
+
+
 
 
 <div>
 
 
+
+<div className="
+flex
+items-center
+gap-2
+mb-2
+">
+
+
+<Sparkles
+
+size={18}
+
+className="text-lime-500"
+
+/>
+
+
+<span className="
+text-xs
+uppercase
+tracking-wide
+text-gray-400
+font-medium
+">
+
+Línea deportiva
+
+</span>
+
+
+</div>
+
+
+
+
+
+
 <h1 className="
 text-2xl
-font-bold
+font-semibold
+text-gray-700
 ">
 
 {linea.nombre}
@@ -181,58 +230,111 @@ font-bold
 
 
 
+
+
 <div className="
 flex
-gap-6
-mt-4
+flex-wrap
+gap-3
+mt-5
+">
+
+
+<span className="
+flex
+items-center
+gap-2
+bg-gray-50
+border
+border-gray-100
+px-3
+py-2
+rounded-full
 text-sm
 text-gray-500
 ">
 
 
-<span>
+<Dumbbell size={15}/>
 
-<Dumbbell
-size={16}
-className="inline mr-1"
-/>
 
 {linea.deporte.nombre}
 
+
 </span>
 
 
 
-<span>
 
-<Layers
-size={16}
-className="inline mr-1"
-/>
+
+
+<span className="
+flex
+items-center
+gap-2
+bg-gray-50
+border
+border-gray-100
+px-3
+py-2
+rounded-full
+text-sm
+text-gray-500
+">
+
+
+<Layers size={15}/>
+
 
 {linea.modalidad.nombre}
 
+
 </span>
 
 
 
-<span>
 
-<MapPin
-size={16}
-className="inline mr-1"
-/>
+
+
+
+<span className="
+flex
+items-center
+gap-2
+bg-gray-50
+border
+border-gray-100
+px-3
+py-2
+rounded-full
+text-sm
+text-gray-500
+">
+
+
+<MapPin size={15}/>
+
 
 {linea.etapas[0].nombre}
 
+
 </span>
 
 
 
-</div>
 
 
 </div>
+
+
+
+
+</div>
+
+
+
+
+
 
 
 
@@ -244,25 +346,33 @@ onClick={abrirCrear}
 
 className="
 bg-lime-500
+hover:bg-lime-600
+transition
 text-white
 px-5
 py-3
-rounded-xl
+rounded-2xl
 flex
-gap-2
 items-center
+gap-2
+text-sm
+font-medium
+shadow-sm
 "
-
 
 >
 
 
 <Plus size={18}/>
 
+
 Nuevo curso
 
 
 </button>
+
+
+
 
 
 
@@ -274,26 +384,74 @@ Nuevo curso
 
 
 
-{/* RUTA DE CURSOS */}
+
+
+{/* DIVISOR */}
 
 
 
 <div className="
-mt-10
-overflow-x-auto
-pb-4
+border-t
+border-gray-100
+my-8
+"/>
+
+
+
+
+
+
+
+{/* CURSOS */}
+
+
+
+
+<div>
+
+
+<div className="
+flex
+justify-between
+items-center
+mb-5
 ">
 
 
 <h2 className="
+text-lg
 font-semibold
-mb-5
+text-gray-600
 ">
 
 Ruta deportiva
 
 </h2>
 
+
+
+<span className="
+text-sm
+text-gray-400
+">
+
+{cursos.length} cursos
+
+</span>
+
+
+
+</div>
+
+
+
+
+
+
+<div className="
+overflow-x-auto
+pb-4
+">
 
 
 <CursoRuta
@@ -306,6 +464,11 @@ editar={abrirEditar}
 
 
 />
+
+
+
+</div>
+
 
 
 </div>
@@ -335,6 +498,8 @@ cursoEditar={cursoEditar}
 
 
 
+
+
 cerrar={()=>{
 
 
@@ -344,6 +509,8 @@ setCursoEditar(null);
 
 
 }}
+
+
 
 
 
@@ -359,6 +526,7 @@ guardar={guardarCurso}
 
 
 </div>
+
 
 
 )
